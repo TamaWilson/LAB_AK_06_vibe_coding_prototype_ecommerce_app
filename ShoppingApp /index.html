@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fruit Shop Prototype</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="nav-shell" id="navShell">
+        <div class="brand">
+          <span class="brand-mark">🍓</span>
+          <div class="brand-copy">
+            <strong>Fruit Shop</strong>
+            <span>Prototype</span>
+          </div>
+        </div>
+        <nav class="nav-menu" aria-label="Primary navigation">
+          <button class="nav-link" data-view="products" data-full="Products" data-short="P">Products</button>
+          <button class="nav-link" data-view="details" data-full="ProductDetails" data-short="D">ProductDetails</button>
+          <button class="nav-link" data-view="cart" data-full="ShoppingCart" data-short="C">ShoppingCart</button>
+          <button class="nav-link" data-view="checkout" data-full="Checkout" data-short="O">Checkout</button>
+        </nav>
+      </aside>
+
+      <main class="app-main">
+        <header class="page-header">
+          <div>
+            <p class="eyebrow">Client-side prototype</p>
+            <h1 id="pageTitle">Products</h1>
+          </div>
+          <div class="header-meta">
+            <span id="cartSummary">Cart: 0 items</span>
+          </div>
+        </header>
+
+        <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+        <section class="page-body" id="app"></section>
+      </main>
+    </div>
+
+    <template id="productCardTemplate">
+      <article class="product-card">
+        <div class="product-emoji"></div>
+        <div class="product-content">
+          <div class="product-topline">
+            <h2></h2>
+            <span class="price"></span>
+          </div>
+          <p class="description"></p>
+          <div class="product-actions">
+            <label class="qty-control">
+              <span>Qty</span>
+              <input type="number" min="1" value="1" />
+            </label>
+            <div class="action-group">
+              <button class="secondary-button details-button" type="button">View Details</button>
+              <button class="primary-button add-button" type="button">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+      </article>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,13 @@
+PRODUCT DETAILS PAGE WIREFRAME
+
++--------------------------------------------------------------+
+| Left Nav | Product Details                                   |
+|----------|-----------------------------------------------------|
+|          | 🍇 Product image / emoji                            |
+|          | Product name                                         |
+|          | Description                                          |
+|          | Price per unit                                       |
+|          | Unit type                                            |
+|          |                                                      |
+|          | [Back to Products]   [Add to Cart]                  |
++--------------------------------------------------------------+
