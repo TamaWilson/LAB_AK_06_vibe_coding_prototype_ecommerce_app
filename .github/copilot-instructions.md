@@ -44,8 +44,12 @@ The interface should include a left-side navigation menu that allows navigation 
 The navigation menu should:
 
 - Stay visible on the left side of the screen on normal layouts
-- Collapse to a one- or two-letter abbreviation when the display width drops below 300 pixels
+- Collapse to a compact form showing an emoji when the display width drops below 600 pixels
 - Continue to provide access to the app pages after collapsing
+
+Additional UI requirement:
+
+- Each navigation item must include a representative emoji visible in the nav bar. When the nav is collapsed (below 600px), the emoji should be centered horizontally inside the nav link and the text label should be hidden, preserving navigation access via the emoji buttons.
 
 The UI should be visually appealing with basic styling, but it does not need to be fully polished. The layout should automatically scale to look correct on desktop and phone devices.
 
@@ -157,7 +161,9 @@ The layouts below describe the intended page structure and navigation behavior. 
 
 ### Desktop or Mobile Layout with Collapsed Navigation
 
-When the available width drops below 300 pixels, the left navigation should collapse to a compact abbreviated form while preserving access to all pages.
+When the available width drops below 600 pixels, the left navigation should collapse to a compact abbreviated form while preserving access to all pages.
+
+Note: the collapse breakpoint was updated from 300px to 600px to provide a better experience on small laptops and larger phones/tablets; ensure the implementation uses 600px as the threshold for both CSS and JS logic.
 
 ```text
 ---------------------------------------------

@@ -75,10 +75,16 @@ function updateNavState() {
   navLinks.forEach((link) => {
     const active = link.dataset.view === state.view;
     link.classList.toggle("active", active);
-    link.textContent = window.innerWidth < 300 ? link.dataset.short : link.dataset.full;
+    // keep emoji and label markup intact; aria-label for accessibility
+    link.setAttribute("aria-label", link.dataset.full);
+    // update active indicator on emoji if present
+    const emoji = link.querySelector('.nav-emoji');
+    if (emoji) {
+      emoji.classList.toggle('active-emoji', active);
+    }
   });
 
-  const shouldCollapse = window.innerWidth < 300;
+  const shouldCollapse = window.innerWidth < 600;
   navShell.classList.toggle("collapsed", shouldCollapse);
   document.body.classList.toggle("nav-collapsed", shouldCollapse);
 }
@@ -93,7 +99,9 @@ function addToCart(productId, quantity) {
   }
   saveCart();
   const product = getProduct(productId);
-  showToast(`${qty} ${product ? product.name : "item"}${qty > 1 ? "s" : ""} added to cart`);
+  const productCount = (state.cart.find((i) => i.id === productId) || {}).quantity || 0;
+  showToast(`${product ? product.name : "Item"}: ${productCount} in cart`);
+  pulseElement(cartSummary);
   render();
 }
 
@@ -153,6 +161,12 @@ function showToast(message) {
   }, 1800);
 }
 
+function pulseElement(el) {
+  if (!el) return;
+  el.classList.add("pulse");
+  window.setTimeout(() => el.classList.remove("pulse"), 380);
+}
+
 function renderProducts() {
   const grid = document.createElement("div");
   grid.className = "products-grid";
@@ -197,15 +211,68 @@ function renderDetails() {
         </div>
       </div>
       <div class="details-actions">
-        <button class="secondary-button" type="button" id="backToProducts">Back to Products</button>
-        <button class="primary-button" type="button" id="addSelected">Add to Cart</button>
+        <div style="display:flex;align-items:center;gap:0.6rem;">
+          <label style="display:flex;flex-direction:column;gap:0.25rem;font-size:0.9rem;">
+            <span class="small-note">Quantity</span>
+            <input id="detailsQty" type="number" min="1" value="1" style="width:88px;padding:0.5rem;border-radius:10px;border:1px solid var(--line);background:#fff;" />
+          </label>
+        </div>
+        <div class="details-actions-buttons">
+          <button class="secondary-button" type="button" id="backToProducts">Back to Products</button>
+          <button class="primary-button" type="button" id="addSelected">Add to Cart</button>
+        </div>
       </div>
     </div>
   `;
 
   card.querySelector("#backToProducts").addEventListener("click", () => setView("products"));
-  card.querySelector("#addSelected").addEventListener("click", () => addToCart(product.id, 1));
+  card.querySelector("#addSelected").addEventListener("click", () => {
+    const qtyInput = card.querySelector('#detailsQty');
+    const qty = qtyInput ? Number(qtyInput.value) || 1 : 1;
+    addToCart(product.id, qty);
+    if (qtyInput) qtyInput.value = 1;
+  });
   return card;
+}
+
+// Show a lightweight product selector overlay so clicking "ProductDetails" in the nav
+// lets the user choose which product's details to open instead of jumping to the last one.
+function showDetailsSelector() {
+  const overlay = document.createElement('div');
+  overlay.className = 'picker-overlay';
+  overlay.innerHTML = `
+    <div class="picker-card">
+      <div class="picker-header">
+        <h3>Select product to view details</h3>
+        <button class="link-button" id="closePicker">Close</button>
+      </div>
+      <div class="picker-list"></div>
+    </div>
+  `;
+
+  const list = overlay.querySelector('.picker-list');
+  products.forEach(p => {
+    const item = document.createElement('button');
+    item.className = 'nav-link picker-item';
+    item.type = 'button';
+    item.innerHTML = `<span class="nav-emoji">${p.emoji}</span><span style="margin-left:0.6rem">${p.name}</span>`;
+    item.addEventListener('click', () => {
+      state.selectedProductId = p.id;
+      document.body.removeChild(overlay);
+      setView('details', p.id);
+    });
+    list.appendChild(item);
+  });
+
+  overlay.querySelector('#closePicker').addEventListener('click', () => {
+    document.body.removeChild(overlay);
+  });
+
+  // allow ESC to close
+  const escHandler = (e) => { if (e.key === 'Escape') { if (document.body.contains(overlay)) document.body.removeChild(overlay); window.removeEventListener('keydown', escHandler); } };
+  window.addEventListener('keydown', escHandler);
+
+  document.body.appendChild(overlay);
 }
 
 function renderCart() {
@@ -396,7 +463,8 @@ navLinks.forEach((link) => {
   link.addEventListener("click", () => {
     const targetView = link.dataset.view;
     if (targetView === "details") {
-      setView("details", state.selectedProductId);
+      // open a selector so users can choose which product to view
+      showDetailsSelector();
       return;
     }
     setView(targetView);

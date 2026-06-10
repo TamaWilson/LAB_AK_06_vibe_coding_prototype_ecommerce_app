@@ -87,9 +87,23 @@ input {
   background: #fff;
   color: var(--text);
   padding: 0.95rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
   text-align: left;
   cursor: pointer;
   transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.nav-emoji {
+  display: inline-grid;
+  place-items: center;
+  font-size: 1.25rem;
+  width: 1.85rem;
+}
+
+.nav-label {
+  display: inline-block;
 }
 
 .nav-link:hover,
@@ -156,6 +170,16 @@ h1 {
 .toast.visible {
   opacity: 1;
   transform: translateY(0) scale(1);
+}
+
+.pulse {
+  animation: pulse-pop 0.38s cubic-bezier(.2,.9,.3,1);
+}
+
+@keyframes pulse-pop {
+  0% { transform: translateY(0) scale(1); }
+  30% { transform: translateY(-4px) scale(1.06); }
+  100% { transform: translateY(0) scale(1); }
 }
 
 .page-body {
@@ -402,26 +426,43 @@ h1 {
   font-size: 0.94rem;
 }
 
-@media (max-width: 900px) {
-  .app-shell {
-    grid-template-columns: 1fr;
-  }
-
-  .nav-shell {
-    border-right: 0;
-    border-bottom: 1px solid rgba(234, 216, 191, 0.9);
-  }
-
-  .nav-menu {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .details-hero,
-  .cart-item,
-  .checkout-item {
-    grid-template-columns: 1fr;
-  }
+.nav-collapsed .nav-link {
+  justify-content: center;
 }
+
+.nav-collapsed .nav-emoji {
+  width: auto;
+}
+
+.nav-collapsed .nav-label {
+  display: none;
+}
+
+/* Picker overlay for choosing which product to open in details */
+.picker-overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(18,12,6,0.36);
+  z-index: 40;
+}
+.picker-card {
+  width: min(640px, 92%);
+  max-height: 80vh;
+  overflow: auto;
+  background: var(--panel);
+  border-radius: 14px;
+  padding: 1rem;
+  box-shadow: var(--shadow);
+}
+.picker-header { display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:0.5rem }
+.picker-list { display:grid;gap:0.5rem }
+.picker-item { display:flex;align-items:center;gap:0.6rem;padding:0.6rem;border-radius:10px;border:1px solid var(--line);background:#fff;text-align:left }
+.picker-item:hover { border-color:var(--accent); background:var(--accent-soft) }
+
+/* Keep navigation on the left for all sizes; responsive collapse is handled
+   via the `nav-collapsed` class and JS breakpoint (600px). */
 
 @media (max-width: 540px) {
   .app-main {
@@ -453,8 +494,8 @@ h1 {
   }
 }
 
-@media (max-width: 299px) {
-  .nav-shell .nav-link span,
+@media (max-width: 599px) {
+  .nav-shell .nav-link .nav-label,
   .nav-shell .brand-copy {
     display: none;
   }
