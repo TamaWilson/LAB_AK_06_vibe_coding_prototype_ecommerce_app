@@ -1,0 +1,23 @@
+NAVIGATION WIREFRAME
+
+Expanded navigation:
++----------------+
+| Products       |
+| ProductDetails |
+| ShoppingCart   |
+| Checkout       |
++----------------+
+
+Collapsed navigation below 300px width:
++----+
+| P  |
+| D  |
+| C  |
+| O  |
++----+
+
+Legend:
+P = Products
+D = ProductDetails
+C = ShoppingCart
+O = Checkout
